@@ -75,7 +75,6 @@ mapImage.onload = function () {
             }
         }
     }
-
 }
 
 
