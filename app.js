@@ -20,8 +20,11 @@ let context = canvas.getContext("2d");
 //things related to images and textures
 const texture_size = 64;
 const wall_texture_path = "images/walls/wall_textures.png"
-let walls = document.createElement('img');
+const walls = document.createElement('img');
 walls.src = wall_texture_path;
+const props_texture_path = "images/props/props_textures.png";
+const props = document.createElement('img');
+props.src = props_texture_path;
 
 let map = new Array(64);
 
@@ -43,11 +46,22 @@ class Line {
     constructor(x, distance, tileType, tx, ty) {
         this.x = x;
         this.distance = distance;
-        this.tileType = (tileType!==undefined)? tileType: "#";
+        this.tileType = (tileType!==undefined)? tileType: "###";
         this.tx = tx;
         this.ty = ty;
     }
 }
+
+class Sprite {
+    constructor(sx, sy, type) {
+        this.sx = sx;
+        this.sy = sy;
+        this.type = (type!==undefined)? type: "###";
+    }
+}
+
+let sprites = new Array(1);
+sprites[0] = new Sprite(32, 34, "");
 
 let lineList = [new Line(0,0)];
 let orderedLineList = [new Line(-1,0), new Line(-1,0), new Line(-1,0)];
@@ -71,7 +85,7 @@ function addLineToRenderer(line) {
 
 function castRay(angle, x) {
     let rad = angle * Math.PI/180;
-    playerRad = playerDir * Math.PI/180;
+    let playerRad = playerDir * Math.PI/180;
     let posX = playerX;
     let posY = playerY;
 
@@ -144,7 +158,6 @@ function drawLine(line, context){
     let x = line.x;
     let distance = line.distance;
     let blockType = line.tileType;
-    console.log(blockType)
 
     let hue = 1 / ( (distance*0.4<1)? 1: distance*0.4 );
 
@@ -210,6 +223,31 @@ function drawLine(line, context){
 
     let height = 100/distance;
     context.drawImage(walls, textureX + Math.min((texture_size*texture_offset),63), textureY, 1, texture_size, (x+1), (SCREEN_HEIGHT/2-(height/2)*WALL_SCALE), 1, height*WALL_SCALE);
+}
+
+function drawSprite(sprite, context) {
+    //set up the correct sprite texture
+    let textureX = 0;
+    let textureY = 128 + 1;
+    let tw = 128; //texture width
+    let th = 128; //texture height
+
+    //setup for drawing a sprite
+    let playerRad = playerDir * Math.PI/180;
+    let vx = sprite.sx - playerX;
+    let vy = sprite.sy - playerY;
+
+    let x = vx;
+    let y = vy;
+
+    //"rotate" the view towards the sprite
+    vx = x * Math.cos(playerRad) - y * Math.sin(playerRad);
+    vy = x * Math.sin(playerRad) + y * Math.cos(playerRad);
+
+    let distance = vy;
+    let height = 100/distance;
+
+    context.drawImage(props, textureX, textureY, tw, th, x, SCREEN_HEIGHT/2-height/2, height, height);
 }
 
 function drawFloor() {
@@ -297,6 +335,7 @@ function updateScreen(){
     drawFloor();
     drawCeiling();
     renderLinesOnCanvas();
+    drawSprite(sprites[0], context)
 }
 
 
