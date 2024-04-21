@@ -61,7 +61,7 @@ class Sprite {
 }
 
 let sprites = new Array(1);
-sprites[0] = new Sprite(32, 34, "");
+sprites[0] = new Sprite(30.0, 57.5, "");
 
 let lineList = [new Line(0,0)];
 let orderedLineList = [new Line(-1,0), new Line(-1,0), new Line(-1,0)];
@@ -233,21 +233,23 @@ function drawSprite(sprite, context) {
     let th = 128; //texture height
 
     //setup for drawing a sprite
-    let playerRad = playerDir * Math.PI/180;
-    let vx = sprite.sx - playerX;
-    let vy = sprite.sy - playerY;
+    let playerRad = (playerDir) * Math.PI/180;
 
-    let x = vx;
-    let y = vy;
+    let sx = sprite.sx - playerX;
+    let sy = sprite.sy - playerY;
 
-    //"rotate" the view towards the sprite
-    vx = x * Math.cos(playerRad) - y * Math.sin(playerRad);
-    vy = x * Math.sin(playerRad) + y * Math.cos(playerRad);
+    let CS = Math.cos(playerRad);
+    let SN = Math.sin(playerRad);
 
-    let distance = vy;
-    let height = 100/distance;
+    let a = sy*CS + sx*SN;
+    let b = sx*CS - sy*SN;
+    sx = a; sy = b;
 
-    context.drawImage(props, textureX, textureY, tw, th, x, SCREEN_HEIGHT/2-height/2, height, height);
+    let sh = 100/sy ;
+
+    console.log(sx)
+
+    context.drawImage(props, textureX, textureY, tw, th, sx, SCREEN_HEIGHT/2-sh/2, sh, sh);
 }
 
 function drawFloor() {
