@@ -10,6 +10,7 @@ const PLAYER_SPEED = 0.2;
 const MIN_WALL_DISTANCE = 0.5;
 const PIXEL_DENSITY = 1;
 
+
 const slowRendering = false;
 
 canvas.height = SCREEN_HEIGHT;
