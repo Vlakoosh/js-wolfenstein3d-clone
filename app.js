@@ -286,49 +286,89 @@ function drawCeiling() {
 
 }
 
+let rightArrowPressed = false;
+let leftArrowPressed = false;
+let upArrowPressed = false;
+let downArrowPressed = false;
+
 document.onkeydown = function (e) {
+
+    switch (e.key) {
+        case "ArrowLeft":
+            leftArrowPressed = true;
+            break;
+        case "ArrowUp":
+            upArrowPressed = true;
+            break;
+
+        case "ArrowRight":
+            rightArrowPressed = true;
+            break;
+        case "ArrowDown":
+            downArrowPressed = true;
+            break;
+    }
+};
+document.onkeyup = function (e) {
+    switch (e.key) {
+        case "ArrowLeft":
+            leftArrowPressed = false;
+            break;
+        case "ArrowUp":
+            upArrowPressed = false;
+            break;
+
+        case "ArrowRight":
+            rightArrowPressed = false;
+            break;
+        case "ArrowDown":
+            downArrowPressed = false;
+            break;
+    }
+};
+
+function updatePlayerPosition(){
     let rad = playerDir * Math.PI/180;
     let vectorX = Math.cos(rad);
     let vectorY = Math.sin(rad);
     let futureX = 0;
     let futureY = 0;
-    switch (e.keyCode) {
-        case 37:
-            console.log('Left Key pressed!');
-            playerDir -= SENSITIVITY
-            playerDir = playerDir % 360;
-            break;
-        case 38:
-            futureX = playerX + MIN_WALL_DISTANCE * vectorY;
-            futureY = playerY + MIN_WALL_DISTANCE * vectorY;
-            if (map[Math.floor(futureX)][Math.floor(playerY)] === "   "){
-                playerX += PLAYER_SPEED * vectorX
-            }
-            if (map[Math.floor(playerX)][Math.floor(futureY)] === "   "){
-                playerY += PLAYER_SPEED * vectorY;
-            }
-            break;
-
-        case 39:
-            console.log('Right Key pressed!');
-            playerDir += SENSITIVITY;
-            playerDir = playerDir % 360;
-            break;
-        case 40:
-            console.log('Down Key pressed!');
-            futureX = playerX - MIN_WALL_DISTANCE * vectorY;
-            futureY = playerY - MIN_WALL_DISTANCE * vectorY;
-            if (map[Math.floor(futureX)][Math.floor(futureY)] === "   "){
-                playerY -= PLAYER_SPEED * vectorY
-                playerX -= PLAYER_SPEED * vectorX
-            }
-
-
-            break;
+    if (leftArrowPressed)
+    {
+        console.log('Left Key pressed!');
+        playerDir -= SENSITIVITY * 0.5;
+        playerDir = playerDir % 360;
     }
-};
+    if (upArrowPressed)
+    {
+        futureX = playerX + MIN_WALL_DISTANCE * vectorY * 0.5;
+        futureY = playerY + MIN_WALL_DISTANCE * vectorY * 0.5;
+        if (map[Math.floor(futureX)][Math.floor(playerY)] === "   ") {
+            playerX += PLAYER_SPEED * vectorX * 0.5;
+        }
+        if (map[Math.floor(playerX)][Math.floor(futureY)] === "   ") {
+            playerY += PLAYER_SPEED * vectorY * 0.5;
+        }
+    }
 
+    if (rightArrowPressed)
+    {
+        console.log('Right Key pressed!');
+        playerDir += SENSITIVITY * 0.5;
+        playerDir = playerDir % 360;
+    }
+    if (downArrowPressed)
+    {
+        console.log('Down Key pressed!');
+        futureX = playerX - MIN_WALL_DISTANCE * vectorY * 0.5;
+        futureY = playerY - MIN_WALL_DISTANCE * vectorY * 0.5;
+        if (map[Math.floor(futureX)][Math.floor(futureY)] === "   ") {
+            playerY -= PLAYER_SPEED * vectorY * 0.5;
+            playerX -= PLAYER_SPEED * vectorX * 0.5;
+        }
+    }
 
+}
 
 //start code here
 
@@ -339,6 +379,7 @@ function updateScreen(){
     drawCeiling();
     renderLinesOnCanvas();
     drawSprite(sprites[0], context)
+    updatePlayerPosition();
 }
 
 
@@ -349,7 +390,7 @@ if (slowRendering){
     setInterval(updateScreen, 7200)
 }
 else {
-    setInterval(updateScreen, 0)
+    setInterval(updateScreen, 17)
 }
 
 
