@@ -1,6 +1,6 @@
 //RULES FOR MAKING MAPS
-//- each tile has 2 characters
-//-
+//- each tile has 3 characters
+//- a leading # character means there is a solid block there
 
 let mapArray = new Array(64);
 for (let i = 0; i < mapArray.length; i++) {
